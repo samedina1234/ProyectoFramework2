@@ -1,0 +1,152 @@
+﻿@page "/Estadisticas"
+@using Microsoft.EntityFrameworkCore
+@using ProyectoFramework2.Data
+@using ProyectoFramework2.Shared.Entities
+@rendermode InteractiveServer
+@inject HabitosDbContext _context
+
+<PageTitle>Estadísticas</PageTitle>
+
+<style>
+    .dashboard {
+        width: 80%;
+        max-width: 900px;
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .stats {
+        display: flex;
+        justify-content: space-around;
+        margin: 2rem 0;
+    }
+
+    .card {
+        flex: 1;
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin: 0 1rem;
+    }
+
+    .bar-container {
+        width: 100%;
+        background-color: #eee;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 20px;
+        margin-top: 10px;
+    }
+
+    .bar {
+        height: 100%;
+        text-align: right;
+        line-height: 20px;
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+    }
+
+    .graph {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+    }
+
+    .graph-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .legend {
+        width: 15px;
+        height: 15px;
+        display: inline-block;
+        border-radius: 50%;
+    }
+</style>
+
+<div class="dashboard">
+    <h1>Dashboard de Hábitos</h1>
+    <p>Bienvenido, <strong>Samirsito</strong></p>
+
+    <div class="stats">
+        <div class="card">
+            <h3>Total Hábitos</h3>
+            <p class="number">@TotalHabitos</p>
+        </div>
+        <div class="card">
+            <h3>Completados</h3>
+            <p class="number">@HabitosCompletados</p>
+        </div>
+        <div class="card">
+            <h3>Progreso</h3>
+            <p class="number">@Progreso%</p>
+        </div>
+    </div>
+
+    <h2>Progreso de Hábitos</h2>
+    <div class="graph">
+        @foreach (var habito in Habitos)
+        {
+            <div class="graph-item">
+                <span>@habito.Titulo (@habito.Progreso%)</span>
+                <div class="bar-container">
+                    <div class="bar" style="width: @(habito.Progreso)% ; background-color: @ObtenerColor((habito.Progreso ?? 0))"></div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h2>Distribución de Hábitos por Tipo</h2>
+    <div class="graph">
+        @foreach (var tipo in HabitosPorTipo)
+        {
+            <div class="graph-item">
+                <span><span class="legend" style="background-color: @ObtenerColor(tipo.Value * 10)"></span> @tipo.Key (@tipo.Value)</span>
+                <div class="bar-container">
+                    <div class="bar" style="width: @(tipo.Value * 10)% ; background-color: @ObtenerColor(tipo.Value * 10)"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private int TotalHabitos;
+    private int HabitosCompletados;
+    private int Progreso;
+    private List<Habito> Habitos = new();
+    private Dictionary<string, int> HabitosPorTipo = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var listaHabitos = await _context.Habitos.ToListAsync();
+        TotalHabitos = listaHabitos.Count;
+        HabitosCompletados = listaHabitos.Count(h => h.Estado == "Completado");
+        Progreso = TotalHabitos > 0 ? (HabitosCompletados * 100) / TotalHabitos : 0;
+
+        Habitos = listaHabitos.Where(h => h.Progreso.HasValue).ToList();
+
+        HabitosPorTipo = listaHabitos
+    .Where(h => !string.IsNullOrEmpty(h.Tipo))
+    .GroupBy(h => h.Tipo ?? "Desconocido")
+    .ToDictionary(g => g.Key, g => g.Count());
+
+    }
+
+    private string ObtenerColor(int progreso)
+    {
+        if (progreso >= 80) return "#4CAF50";  // Verde
+        if (progreso >= 50) return "#FFC107";  // Amarillo
+        return "#F44336";  // Rojo
+    }
+}
+

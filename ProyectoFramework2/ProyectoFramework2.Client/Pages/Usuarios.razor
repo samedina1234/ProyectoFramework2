@@ -1,0 +1,135 @@
+﻿@page "/usuario/{id:int}"
+@inject HttpClient Http
+@using ProyectoFramework2.Shared.Entities
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+<style>
+    .perfil-container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+
+    .btn-back {
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .perfil-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .perfil-imagen img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid #555;
+        object-fit: cover;
+    }
+
+    .btn-cambiar-foto {
+        background: #7D3C98;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .perfil-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .racha-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .racha-box {
+        background: black;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+</style>
+
+@if (Usuario == null)
+{
+	<p>Cargando...</p>
+}
+else
+{
+	<div class="perfil-container">
+		<button class="btn-back">← Regresar</button>
+		<h2><i class="fas fa-user-circle"></i> Perfil</h2>
+		<div class="perfil-content">
+			<div class="perfil-imagen">
+				<img src="snoopy.png" alt="Foto de perfil" />
+				<button class="btn-cambiar-foto">📷 Cambiar foto</button>
+			</div>
+			<div class="racha-container">
+				<p>Días de racha:</p>
+				<span class="racha-box">100 🔥</span>
+			</div>
+			<div class="perfil-content">
+				<label>Usuario:</label>
+				<p>@Usuario.NombreCompleto</p>
+				<label>Edad:</label>
+				<p>@Usuario.Edad</p>
+				<label>Correo Electrónico:</label>
+                <p>@Usuario.Correo</p>
+				<label>Género:</label>
+                <p>@Usuario.Genero</p>
+			</div>
+		</div>
+	</div>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private Usuario? Usuario;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Usuario = await Http.GetFromJsonAsync<Usuario>($"api/usuario/{id}");
+    }
+}

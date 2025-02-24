@@ -1,0 +1,176 @@
+﻿@page "/Nuevohabito"
+@using System.Diagnostics
+
+<PageTitle>Nuevo Hábito</PageTitle>
+
+<style>
+    .container {
+        width: 500px;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .input-group {
+        margin-top: 20px;
+        text-align: left;
+    }
+
+    label {
+        font-size: 16px;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 12px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+
+    .duration-options {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+        .duration-options button {
+            padding: 12px 18px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+            .duration-options button:hover {
+                background: #ffbaba;
+            }
+
+            .duration-options button.active {
+                background: #ff6b6b;
+                color: white;
+                border: none;
+            }
+
+    .color-options {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 12px;
+    }
+
+        .color-options div {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+            .color-options div:hover {
+                transform: scale(1.2);
+            }
+
+            .color-options div.selected {
+                border: 3px solid black;
+            }
+
+    .details {
+        background: #eee;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        color: #555;
+        text-align: center;
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: #ff6b6b;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        margin-top: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .btn:hover {
+            background: #ff4f4f;
+        }
+</style>
+
+
+
+<div class="container">
+    <div class="title">Nuevo Hábito</div>
+
+    <div class="input-group">
+        <label>➕ Título del Hábito:</label>
+        <input type="text" placeholder="Tomar agua">
+    </div>
+
+    <div class="input-group">
+        <label>⏰ Duración:</label>
+        <div class="duration-options">
+            <button>15 min</button>
+            <button class="active">30 min</button>
+            <button>45 min</button>
+            <button>2 horas</button>
+            <button>3 horas</button>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>⚡ Tipo de Hábito:</label>
+        <select>
+            <option>Hábito sano</option>
+            <option>Trabajo</option>
+            <option>Ejercicio</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>🎨 Selecciona un color para el hábito:</label>
+        <div class="color-options">
+            <div style="background-color: red;"></div>
+            <div style="background-color: orange;"></div>
+            <div style="background-color: yellow;"></div>
+            <div style="background-color: green;"></div>
+            <div style="background-color: blue;"></div>
+            <div style="background-color: purple;"></div>
+            <div style="background-color: brown;"></div>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>📝 ¿Algún detalle?</label>
+        <div class="details">Añadir detalles al hábito</div>
+    </div>
+
+    <button class="btn">
+        Agregar Nuevo Hábito
+    </button>
+</div>
+
+

@@ -1,0 +1,179 @@
+﻿@page "/"
+
+
+<div class="container">
+    <!-- Calendario y Contador -->
+    <div class="grid">
+        <div class="calendar">
+            <div class="calendar-header">📅 June 2022</div>
+            <div class="calendar-body">
+                <div class="day">S</div><div class="day">M</div><div class="day">T</div><div class="day">W</div><div class="day">T</div><div class="day">F</div><div class="day">S</div>
+                <div class="date">1</div><div class="date">2</div><div class="date">3</div><div class="date">4</div>
+                <div class="date">5</div><div class="date">6</div><div class="date active">7</div>
+            </div>
+        </div>
+        <div class="counter">
+            <h2>🔥 ¡365! DÍAS</h2>
+            <div class="days">
+                <span class="day-box">L</span><span class="day-box">M</span><span class="day-box">X</span><span class="day-box">J</span><span class="day-box">V</span><span class="day-box">S</span><span class="day-box">D</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Botones de filtro -->
+    <div class="filters">
+        <button class="btn active">TODOS</button>
+        <button class="btn">🌞 MAÑANA</button>
+        <button class="btn">🌆 TARDE</button>
+        <button class="btn">🌙 NOCHE</button>
+    </div>
+
+    <!-- Lista de Hábitos -->
+    <div class="habits">
+        @foreach (var habit in Habits)
+        {
+            <div class="habit-card">
+                <label>
+                    <input type="checkbox" checked="@habit.IsCompleted" />
+                    <span class="checkbox-custom"></span>
+                </label>
+                <span class="habit-text">🛏 Duerme más de 8 h</span>
+                <span class="status">✔ Listo</span>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 900px;
+        margin: auto;
+        text-align: center;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Calendario */
+    .calendar {
+        background: linear-gradient(135deg, #2A2D43, #3E4165);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .calendar-header {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .calendar-body {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+    }
+
+    .day, .date {
+        padding: 10px;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+        .date.active {
+            background: #ff7b00;
+            color: white;
+        }
+
+    /* Contador */
+    .counter {
+        background: #f5f5f5;
+        padding: 20px;
+        border-radius: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .days .day-box {
+        background: #e0e0e0;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin: 3px;
+        display: inline-block;
+        font-weight: bold;
+    }
+
+    /* Filtros */
+    .filters {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        background: #444;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+        .btn:hover {
+            background: #ff7b00;
+        }
+
+        .btn.active {
+            background: #ff7b00;
+        }
+
+    /* Hábitos */
+    .habits {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .habit-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .checkbox-custom {
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+        border: 3px solid #333;
+        border-radius: 6px;
+        margin-right: 10px;
+        background: white;
+    }
+
+    input[type="checkbox"]:checked + .checkbox-custom {
+        background: #28a745;
+    }
+</style>
+
+@code {
+    private List<Habit> Habits = new()
+    {
+        new Habit { IsCompleted = true },
+        new Habit { IsCompleted = false },
+        new Habit { IsCompleted = true },
+        new Habit { IsCompleted = false }
+    };
+
+    class Habit
+    {
+        public bool IsCompleted { get; set; }
+    }
+}
