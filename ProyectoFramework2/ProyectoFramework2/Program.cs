@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFramework2.Client.Pages;
 using ProyectoFramework2.Components;
@@ -6,6 +8,10 @@ using ProyectoFramework2.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<HttpClient>();
+
+builder.Services.AddScoped<ProyectoFramework2.Services.AuthenticationService>();
 
 builder.Services.AddDbContext<HabitosDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

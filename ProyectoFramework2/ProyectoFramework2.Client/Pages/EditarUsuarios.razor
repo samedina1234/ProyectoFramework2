@@ -15,19 +15,19 @@ else
 <EditForm Model="Usuario" OnSubmit="HandleSubmit">
     <div>
         <label for="Apodo">Apodo:</label>
-        <InputText id="Apodo" @bind-value="Usuario.Apodo" class="form-control" />
+        <InputText id="Apodo" name="Apodo" @bind-value="Usuario.Apodo" class="form-control" />
     </div>
     <div>
         <label for="Edad">Edad:</label>
-        <InputNumber id="Edad" @bind-Value="Usuario.Edad" class="form-control" />
+        <InputNumber id="Edad" name="Edad" @bind-Value="Usuario.Edad" class="form-control" />
     </div>
     <div>
         <label for="Correo">Correo:</label>
-        <InputText id="Correo" @bind-Value="Usuario.Correo" class="form-control" />
+        <InputText id="Correo" name="Correo" @bind-Value="Usuario.Correo" class="form-control" />
     </div>
     <div>
         <label for="Genero">Genero:</label>
-        <InputText id="Genero" @bind-Value="Usuario.Genero" class="form-control" />
+        <InputText id="Genero" name="Genero" @bind-Value="Usuario.Genero" class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">Guardar</button>
 </EditForm>

@@ -1,0 +1,169 @@
+﻿@page "/login"
+@inject HttpClient Http
+@inject AuthenticationService AuthService
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Forms
+@using ProyectoFramework2.Services
+@rendermode InteractiveServer
+<style>
+    .registro-container {
+        max-width: 500px;
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
+    }
+
+    .btn-back {
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 28px;
+        color: #7D3C98;
+        margin-bottom: 20px;
+    }
+
+    .registro-form {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        padding: 15px;
+        border: 2px solid #7D3C98;
+        border-radius: 8px;
+    }
+
+    label {
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .error {
+        border: 2px solid red;
+        background-color: #ffe6e6;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .password-box {
+        border: 2px solid blue;
+    }
+
+    .btn-registrarse {
+        background: #7D3C98;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 18px;
+    }
+
+    .social-login {
+        margin-top: 15px;
+    }
+
+    .btn-social {
+        border: none;
+        background: none;
+        font-size: 24px;
+        margin: 0 10px;
+        cursor: pointer;
+    }
+
+    .google {
+        color: #db4437;
+    }
+
+    .facebook {
+        color: #3b5998;
+    }
+</style>
+
+<h1>Iniciar Sesión</h1>
+
+<EditForm Model="loginRequest" OnValidSubmit="HandleSubmit">
+    <div>
+        <label for="Correo">Correo:</label>
+        <InputText id="Correo" @bind-Value="loginRequest.Correo" class="form-control" />
+    </div>
+    <div>
+        <label for="Contraseña">Contraseña:</label>
+        <InputText id="Contraseña" @bind-Value="loginRequest.Contraseña" type="password" class="form-control" />
+    </div>
+    <button type="submit" class="btn-registrarse">Iniciar Sesión</button>
+    <div class="social-login">
+        <p>o Ingresa Con</p>
+        <button class="btn-social google">G</button>
+        <button class="btn-social facebook">f</button>
+    </div>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p class="error-message">@errorMessage</p>
+}
+
+@code {
+    private LoginRequest loginRequest = new LoginRequest
+    {
+        Correo = string.Empty,
+        Contraseña = string.Empty
+    };
+    private string? errorMessage { get; set; } = string.Empty;
+
+    private async Task HandleSubmit()
+    {
+        errorMessage = string.Empty; // Limpia el mensaje de error
+
+        try
+        {
+            var result = await Http.PostAsJsonAsync("api/auth/login", loginRequest);
+            if (result.IsSuccessStatusCode)
+            {
+                var usuario = await result.Content.ReadFromJsonAsync<Usuario>();
+                if (usuario != null)
+                {
+                    await AuthService.SetNombreUsuario(usuario.NombreCompleto);
+                    NavigationManager.NavigateTo("/");
+                }
+            }
+            else
+            {
+                errorMessage = await result.Content.ReadAsStringAsync(); // Obtiene el mensaje de error del API
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Error al iniciar sesión: " + ex.Message;
+        }
+    }
+
+    public class LoginRequest // Clase para manejar la peticion de login
+    {
+        public required string Correo { get; set; }
+        public required string Contraseña { get; set; }
+    }
+}
