@@ -123,7 +123,7 @@ else
         </div>
     </div>
 }
-
+<button class="btn btn-primary" @onclick="CrearUsuario">Crear Usuario</button>
 @code {
     [Parameter]
     public int id { get; set; }
@@ -138,4 +138,9 @@ else
     {
         NavigationManager.NavigateTo($"/edit-usuario/{id}");
     }
+
+	void CrearUsuario()
+	{
+		NavigationManager.NavigateTo("/edit-usuario");
+	}
 }
