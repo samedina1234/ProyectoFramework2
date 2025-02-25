@@ -152,6 +152,9 @@ public partial class HabitosDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("nombre_completo");
+            entity.Property(e => e.Apodo)
+                .HasMaxLength(60)
+                .HasColumnName("apodo");
         });
 
         OnModelCreatingPartial(modelBuilder);

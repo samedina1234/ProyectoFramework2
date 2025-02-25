@@ -24,6 +24,8 @@ namespace ProyectoFramework2.Shared.Entities
 
         public bool? DarkMode { get; set; }
 
+        public string? Apodo { get; set; }
+
         public virtual ICollection<Habito> Habitos { get; set; } = new List<Habito>();
     }
 }

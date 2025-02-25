@@ -1,0 +1,73 @@
+﻿@page "/edit-usuario"
+@page "/edit-usuario/{id:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Forms
+@using ProyectoFramework2.Shared.Entities
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+@if (Id == null)
+{
+    <h1>Crear Usuario</h1>
+}
+else
+{
+    <h1>Editar Usuario</h1>
+}
+<form onsubmit="HandleSubmit">
+    <div>
+        <label for="Apodo">Apodo:</label>
+        <input type="text" id="Apodo"  class="form-control" />
+    </div>
+    <div>
+        <label for="Edad">Edad:</label>
+        <input type="number" id="Edad"  class="form-control" />
+    </div>
+    <div>
+        <label for="Correo">Correo:</label>
+        <input type="email" id="Correo"  class="form-control" />
+    </div>
+    <div>
+        <label for="Genero">Genero:</label>
+        <input type="text" id="Genero"  class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    public Usuario Usuario { get; set; } = new Usuario();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            var result = await Http.GetFromJsonAsync<Usuario>($"api/usuario/{(int)Id}");
+            if (result != null)
+            {
+                Usuario = result;
+            }
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (Id == null)
+        {
+            var result = await Http.PostAsJsonAsync("api/usuario", Usuario);
+            if(result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        else
+        {
+            var result = await Http.PutAsJsonAsync($"api/usuario/{Id}", Usuario);
+            if(result.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+}
