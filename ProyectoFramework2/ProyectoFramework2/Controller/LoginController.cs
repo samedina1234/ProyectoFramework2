@@ -10,9 +10,9 @@ namespace ProyectoFramework2.Controller
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly HabitosDbContext _context;
+        private readonly HabitosContext _context;
 
-        public AuthController(HabitosDbContext context)
+        public AuthController(HabitosContext context)
         {
             _context = context;
         }

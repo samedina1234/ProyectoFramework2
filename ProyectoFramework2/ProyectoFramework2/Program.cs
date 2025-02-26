@@ -13,7 +13,7 @@ builder.Services.AddScoped<HttpClient>();
 
 builder.Services.AddScoped<ProyectoFramework2.Client.Servicios.AuthenticationService>();
 
-builder.Services.AddDbContext<HabitosDbContext>(options =>
+builder.Services.AddDbContext<HabitosContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.

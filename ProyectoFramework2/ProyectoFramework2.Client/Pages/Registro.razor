@@ -111,15 +111,22 @@ else
 <EditForm Model="Usuario" OnValidSubmit="HandleSubmit">
     <div>
         <label for="nombre">Nombre Completo:</label>
-        <InputText id="nokmbre" @bind-value="Usuario.NombreCompleto" class="form-control" />
+        <InputText id="nombre" @bind-value="Usuario.NombreCompleto" class="form-control" />
     </div>
     <div>
         <label for="Edad">Edad:</label>
-        <InputNumber id="Edad" @bind-Value="Usuario.Edad" class="form-control" />
+        <InputDate id="Edad" @bind-Value="Usuario.FechaNacimiento" class="form-control" />
     </div>
 	<div>
 		<label for="Genero">Genero:</label>
-		<InputText id="Genero" @bind-Value="Usuario.Genero" class="form-control" />
+        <div>
+            <label for="Genero">Genero:</label>
+            <InputSelect id="Genero" @bind-Value="Usuario.Genero" class="form-control">
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+                <option value="O">Otro</option>
+            </InputSelect>
+        </div>
 	</div>
     <div>
         <label for="Correo">Correo:</label>

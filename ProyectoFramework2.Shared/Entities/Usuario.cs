@@ -12,20 +12,18 @@ namespace ProyectoFramework2.Shared.Entities
 
         public string NombreCompleto { get; set; } = null!;
 
+        public DateOnly? FechaNacimiento { get; set; }
+
         public string Correo { get; set; } = null!;
 
         public string Contraseña { get; set; } = null!;
 
-        public string? Genero { get; set; }
-
-        public int? Edad { get; set; }
-
-        public DateTime? FechaRegistro { get; set; }
-
-        public bool? DarkMode { get; set; }
-
         public string? Apodo { get; set; }
 
-        public virtual ICollection<Habito> Habitos { get; set; } = new List<Habito>();
+        public string? Genero { get; set; }
+
+        public DateOnly? FechaRegistro { get; set; }
+
+        public bool Estado { get; set; }
     }
 }

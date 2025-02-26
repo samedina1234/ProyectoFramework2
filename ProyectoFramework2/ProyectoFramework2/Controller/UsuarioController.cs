@@ -11,9 +11,9 @@ namespace ProyectoFramework2.Controller
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly HabitosDbContext _context;
+        private readonly HabitosContext _context;
 
-        public UsuarioController(HabitosDbContext context)
+        public UsuarioController(HabitosContext context)
         {
             _context = context;
         }
@@ -44,7 +44,7 @@ namespace ProyectoFramework2.Controller
             dbUsuario.Apodo = updatedUsuario.Apodo;
             dbUsuario.Correo = updatedUsuario.Correo;
             dbUsuario.Genero = updatedUsuario.Genero;
-            dbUsuario.Edad = updatedUsuario.Edad;
+            dbUsuario.FechaNacimiento = updatedUsuario.FechaNacimiento;
 
             await _context.SaveChangesAsync();
 

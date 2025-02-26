@@ -3,7 +3,7 @@
 @using ProyectoFramework2.Data
 @using ProyectoFramework2.Shared.Entities
 @rendermode InteractiveServer
-@inject HabitosDbContext _context
+@inject HabitosContext _context
 
 <PageTitle>Estadísticas</PageTitle>
 
@@ -94,7 +94,7 @@
 
     <h2>Progreso de Hábitos</h2>
     <div class="graph">
-        @foreach (var habito in Habitos)
+        @* @foreach (var habito in Habitos)
         {
             <div class="graph-item">
                 <span>@habito.Titulo (@habito.Progreso%)</span>
@@ -102,7 +102,7 @@
                     <div class="bar" style="width: @(habito.Progreso)% ; background-color: @ObtenerColor((habito.Progreso ?? 0))"></div>
                 </div>
             </div>
-        }
+        } *@
     </div>
 
     <h2>Distribución de Hábitos por Tipo</h2>
@@ -126,21 +126,21 @@
     private List<Habito> Habitos = new();
     private Dictionary<string, int> HabitosPorTipo = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        var listaHabitos = await _context.Habitos.ToListAsync();
-        TotalHabitos = listaHabitos.Count;
-        HabitosCompletados = listaHabitos.Count(h => h.Estado == "Completado");
-        Progreso = TotalHabitos > 0 ? (HabitosCompletados * 100) / TotalHabitos : 0;
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var listaHabitos = await _context.Habitos.ToListAsync();
+    //     TotalHabitos = listaHabitos.Count;
+    //     HabitosCompletados = listaHabitos.Count(h => h.Estado == "Completado");
+    //     Progreso = TotalHabitos > 0 ? (HabitosCompletados * 100) / TotalHabitos : 0;
 
-        Habitos = listaHabitos.Where(h => h.Progreso.HasValue).ToList();
+    //     Habitos = listaHabitos.Where(h => h.Progreso.HasValue).ToList();
 
-        HabitosPorTipo = listaHabitos
-    .Where(h => !string.IsNullOrEmpty(h.Tipo))
-    .GroupBy(h => h.Tipo ?? "Desconocido")
-    .ToDictionary(g => g.Key, g => g.Count());
+    //     HabitosPorTipo = listaHabitos
+    // .Where(h => !string.IsNullOrEmpty(h.Tipo))
+    // .GroupBy(h => h.Tipo ?? "Desconocido")
+    // .ToDictionary(g => g.Key, g => g.Count());
 
-    }
+    // }
 
     private string ObtenerColor(int progreso)
     {
