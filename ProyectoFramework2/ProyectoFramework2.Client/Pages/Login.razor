@@ -3,8 +3,8 @@
 @inject AuthenticationService AuthService
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Components.Forms
-@using ProyectoFramework2.Services
-@rendermode InteractiveServer
+@using ProyectoFramework2.Client.Servicios
+@rendermode InteractiveWebAssembly
 <style>
     .registro-container {
         max-width: 500px;
@@ -104,7 +104,7 @@
 
 <h1>Iniciar Sesión</h1>
 
-<EditForm Model="loginRequest" OnValidSubmit="HandleSubmit">
+<EditForm Model="loginRequest" OnValidSubmit="HandleSubmit" FormName="loginForm">
     <div>
         <label for="Correo">Correo:</label>
         <InputText id="Correo" @bind-Value="loginRequest.Correo" class="form-control" />
@@ -146,7 +146,7 @@
                 var usuario = await result.Content.ReadFromJsonAsync<Usuario>();
                 if (usuario != null)
                 {
-                    await AuthService.SetNombreUsuario(usuario.NombreCompleto);
+                    await AuthService.SetNombreUsuario(usuario.NombreCompleto, usuario.IdUsuario); // Pasa el ID del usuario
                     NavigationManager.NavigateTo("/");
                 }
             }

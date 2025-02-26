@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<HttpClient>();
 
-builder.Services.AddScoped<ProyectoFramework2.Services.AuthenticationService>();
+builder.Services.AddScoped<ProyectoFramework2.Client.Servicios.AuthenticationService>();
 
 builder.Services.AddDbContext<HabitosDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

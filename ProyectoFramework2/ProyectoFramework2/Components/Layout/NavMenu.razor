@@ -1,5 +1,6 @@
-﻿@using ProyectoFramework2.Services
+﻿@using ProyectoFramework2.Client.Servicios
 @inject AuthenticationService AuthService
+@rendermode InteractiveServer
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -13,7 +14,7 @@
 <div class="profile-section">
     <img src="https://static.vecteezy.com/system/resources/previews/027/951/137/non_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png" alt="Avatar" class="avatar">
     <h3>@AuthService.NombreUsuario</h3>
-    <a class="perfil-badge" href="/usuario/1">Perfil</a>
+    <a class="perfil-badge" href="/usuario/@AuthService.IdUsuario">Perfil</a>
 </div>
 
 <nav class="nav flex-column">
