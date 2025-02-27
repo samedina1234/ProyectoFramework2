@@ -12,13 +12,17 @@ namespace ProyectoFramework2.Shared.Entities
 
         public int? SubcategoriaId { get; set; }
 
-        public string? Meta { get; set; }
+        public DateOnly FechaCreacion { get; set; }
+
+        public DateOnly? Meta { get; set; }
 
         public int? Duracion { get; set; }
 
         public string? Color { get; set; }
 
         public string? Frecuencia { get; set; }
+
+        public virtual ICollection<RegistroHabito> RegistroHabitos { get; set; } = new List<RegistroHabito>();
 
         public virtual Subcategoria? Subcategoria { get; set; }
     }

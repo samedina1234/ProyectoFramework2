@@ -8,14 +8,20 @@ namespace ProyectoFramework2.Shared.Entities
 {
     public partial class RegistroHabito
     {
-        public int IdRegistro { get; set; }
+        public int HabitoId { get; set; }
 
-        public int IdHabito { get; set; }
+        public int UsuarioId { get; set; }
 
-        public DateOnly? Fecha { get; set; }
+        public DateOnly FechaCompletado { get; set; }
 
-        public string? Estado { get; set; }
+        public DateOnly? FechaCreacionHabito { get; set; }
 
-        public virtual Habito IdHabitoNavigation { get; set; } = null!;
+        public int VecesCompletado { get; set; }
+
+        public bool EstadoHabito { get; set; }
+
+        public virtual Habito Habito { get; set; } = null!;
+
+        public virtual Usuario Usuario { get; set; } = null!;
     }
 }

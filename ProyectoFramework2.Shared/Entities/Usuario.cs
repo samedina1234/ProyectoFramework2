@@ -22,8 +22,10 @@ namespace ProyectoFramework2.Shared.Entities
 
         public string? Genero { get; set; }
 
-        public DateOnly? FechaRegistro { get; set; }
+        public DateOnly FechaRegistro { get; set; }
 
         public bool Estado { get; set; }
+
+        public virtual ICollection<RegistroHabito> RegistroHabitos { get; set; } = new List<RegistroHabito>();
     }
 }
