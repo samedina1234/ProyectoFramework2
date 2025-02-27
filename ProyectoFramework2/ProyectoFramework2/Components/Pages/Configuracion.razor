@@ -7,11 +7,12 @@
         background: white;
         border-radius: 15px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        width: 450px; /* Aumentado */
-        padding: 30px; /* Aumentado */
+        width: 450px;
+        padding: 30px;
         text-align: center;
-        justify-content: center;
-    }
+        margin: 0 auto; /* Centrar horizontalmente */
+        position: relative; /* Necesario para el centrado vertical absoluto */
+     }
 
             .back-button {
                 text-decoration: none;
@@ -133,7 +134,7 @@
 </style>
 
 <div class="config-container">
-    <a href="#" class="back-button">← Regresar</a>
+    <a href="/" class="back-button">← Regresar</a>
     <h1 class="config-title">Configuración <span class="icon">⚙️</span></h1>
 
     <div class="config-options">

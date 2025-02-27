@@ -1,0 +1,208 @@
+﻿@page "/estadisticas"
+@page "/usuario/{id:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+<PageTitle>Estadísticas</PageTitle>
+
+<div class="dashboard">
+    <h1>Dashboard de Hábitos</h1>
+    <p>Bienvenido, <strong>@apodo</strong></p>
+    <a href="/" class="back-button">← Regresar</a>
+
+    <div class="stats">
+        <div class="card">
+            <h3>Total Hábitos</h3>
+            <p class="number">@TotalHabitos</p>
+        </div>
+        <div class="card">
+            <h3>Completados</h3>
+            <p class="number">@HabitosCompletados</p>
+        </div>
+        <div class="card">
+            <h3>Progreso</h3>
+            <p class="number">@Progreso%</p>
+        </div>
+    </div>
+
+    <h2>Progreso de Hábitos</h2>
+    <div class="graph">
+        @foreach (var habito in Habitos)
+        {
+            <div class="graph-item">
+                <span>@habito.Titulo (@habito.Progreso%)</span>
+                <div class="bar-container">
+                    <div class="bar" style="width: @(habito.Progreso)% ; background-color: @ObtenerColor(habito.Progreso)"></div>
+
+                </div>
+            </div>
+        }
+    </div>
+
+    <h2>Distribución de Hábitos por Tipo</h2>
+    <div class="graph">
+        @foreach (var tipo in HabitosPorTipo)
+        {
+            <div class="graph-item">
+                <span><span class="legend" style="background-color: @ObtenerColor(tipo.Value * 10)"></span> @tipo.Key (@tipo.Value)</span>
+                <div class="bar-container">
+                    <div class="bar" style="width: @(tipo.Value * 10)% ; background-color: @ObtenerColor(tipo.Value * 10)"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    public string apodo { get; set; } = string.Empty;
+    private Usuario? Usuario;
+
+    private int TotalHabitos { get; set; }
+    private int HabitosCompletados { get; set; }
+    private int Progreso { get; set; }
+    private List<HabitoInfo> Habitos { get; set; } = new List<HabitoInfo>();
+    private Dictionary<string, int> HabitosPorTipo { get; set; } = new Dictionary<string, int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Obtener idUsuario de localStorage
+        var userIdString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "idUsuario");
+        if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+        {
+            id = userId;
+        }
+
+        // Obtener apodo de localStorage
+        apodo = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "apodo");
+
+        // Obtener datos de la API
+        await ObtenerEstadisticas();
+    }
+
+    private async Task ObtenerEstadisticas()
+    {
+        if (id == 0) return; // Si no hay usuarioId, no hacer nada
+
+        // Obtener hábitos completados por usuario
+        var registros = await Http.GetFromJsonAsync<List<RegistroHabito>>($"api/estadisticas/usuario/{id}");
+
+        if (registros != null)
+        {
+            HabitosCompletados = registros.Count;
+            TotalHabitos = 10;
+            Progreso = (HabitosCompletados * 100) / TotalHabitos;
+        }
+
+        // Obtener datos para el gráfico de progreso de hábitos
+        Habitos = new List<HabitoInfo>
+        {
+            new HabitoInfo { Titulo = "Leer", Progreso = 70 },
+            new HabitoInfo { Titulo = "Ejercicio", Progreso = 50 },
+            new HabitoInfo { Titulo = "Meditar", Progreso = 90 }
+        };
+
+        // Obtener datos para el gráfico de distribución de hábitos por tipo
+        HabitosPorTipo = new Dictionary<string, int>
+        {
+            { "Salud", 5 },
+            { "Productividad", 3 },
+            { "Creatividad", 2 }
+        };
+    }
+
+    private string ObtenerColor(int progreso)
+    {
+        if (progreso < 30) return "red";
+        if (progreso < 70) return "yellow";
+        return "green";
+    }
+
+    public class HabitoInfo
+    {
+        public string Titulo { get; set; }
+        public int Progreso { get; set; }
+    }
+}
+
+
+<style>
+    .back-button {
+        text-decoration: none;
+        color: #444;
+        font-size: 14px;
+        display: block;
+        text-align: left;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+	.dashboard {
+		width: 80%;
+		max-width: 900px;
+		background: white;
+		padding: 2rem;
+		border-radius: 12px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+		text-align: center;
+        margin: 0 auto; /* Centrar horizontalmente */
+        position: relative; /* Necesario para el centrado vertical absoluto */
+	}
+
+	.stats {
+		display: flex;
+		justify-content: space-around;
+		margin: 2rem 0;
+	}
+
+	.card {
+		flex: 1;
+		background-color: white;
+		padding: 1.5rem;
+		border-radius: 8px;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		text-align: center;
+		margin: 0 1rem;
+	}
+
+	.bar-container {
+		width: 100%;
+		background-color: #eee;
+		border-radius: 8px;
+		overflow: hidden;
+		height: 20px;
+		margin-top: 10px;
+	}
+
+	.bar {
+		height: 100%;
+		text-align: right;
+		line-height: 20px;
+		color: white;
+		font-weight: bold;
+		border-radius: 8px;
+	}
+
+	.graph {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding: 20px;
+	}
+
+	.graph-item {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.legend {
+		width: 15px;
+		height: 15px;
+		display: inline-block;
+		border-radius: 50%;
+	}
+</style>
