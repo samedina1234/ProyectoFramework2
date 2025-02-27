@@ -103,6 +103,9 @@
 @if (Usuario != null)
 {
 	<h1>Crear Usuario</h1>
+    <br/>
+    <h5> Todos los campos con asterisco o " * " son requeridos</h5>
+	<br />
 }
 else
 {
@@ -110,18 +113,18 @@ else
 }
 <EditForm Model="Usuario" OnValidSubmit="HandleSubmit">
     <div>
-        <label for="nombre">Nombre Completo:</label>
-        <InputText id="nombre" @bind-value="Usuario.NombreCompleto" class="form-control" />
+        <label for="nombre">* Nombre Completo:</label>
+        <InputText id="nombre" @bind-value="Usuario.NombreCompleto" class="form-control" required/>
     </div>
     <div>
-        <label for="Edad">Edad:</label>
-        <InputDate id="Edad" @bind-Value="Usuario.FechaNacimiento" class="form-control" />
+        <label for="Edad">* Edad:</label>
+        <InputDate id="Edad" @bind-Value="Usuario.FechaNacimiento" class="form-control" required />
     </div>
 	<div>
-		<label for="Genero">Genero:</label>
         <div>
-            <label for="Genero">Genero:</label>
-            <InputSelect id="Genero" @bind-Value="Usuario.Genero" class="form-control">
+            <label for="Genero">* Genero:</label>
+            <InputSelect id="Genero" @bind-Value="Usuario.Genero" class="form-control" required>
+                <option value="" disabled selected>Selecione su Genero</option>
                 <option value="M">Masculino</option>
                 <option value="F">Femenino</option>
                 <option value="O">Otro</option>
@@ -129,12 +132,12 @@ else
         </div>
 	</div>
     <div>
-        <label for="Correo">Correo:</label>
-        <InputText id="Correo" @bind-Value="Usuario.Correo" class="form-control" />
+        <label for="Correo">* Correo:</label>
+        <InputText id="Correo" @bind-Value="Usuario.Correo" class="form-control" required />
     </div>
     <div>
-        <label for="Contrasseña">Contraseña:</label>
-        <InputText id="Contrasseña" @bind-Value="Usuario.Contraseña" class="form-control" />
+        <label for="Contrasseña">* Contraseña:</label>
+        <InputText id="Contrasseña" @bind-Value="Usuario.Contraseña" class="form-control" required />
     </div>
 	<button type="submit" class="btn-registrarse">Registrarse</button>
 	<div class="social-login">

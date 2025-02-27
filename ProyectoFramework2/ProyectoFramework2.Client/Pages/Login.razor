@@ -107,11 +107,11 @@
 <EditForm Model="loginRequest" OnValidSubmit="HandleSubmit" FormName="loginForm">
     <div>
         <label for="Correo">Correo:</label>
-        <InputText id="Correo" @bind-Value="loginRequest.Correo" class="form-control" />
+        <InputText id="Correo" @bind-Value="loginRequest.Correo" class="form-control" required/>
     </div>
     <div>
         <label for="Contraseña">Contraseña:</label>
-        <InputText id="Contraseña" @bind-Value="loginRequest.Contraseña" type="password" class="form-control" />
+        <InputText id="Contraseña" @bind-Value="loginRequest.Contraseña" type="password" class="form-control" required />
     </div>
     <button type="submit" class="btn-registrarse">Iniciar Sesión</button>
     <div class="social-login">
@@ -146,7 +146,8 @@
                 var usuario = await result.Content.ReadFromJsonAsync<Usuario>();
                 if (usuario != null)
                 {
-                    await AuthService.SetNombreUsuario(usuario.NombreCompleto, usuario.IdUsuario); // Pasa el ID del usuario
+                    var apodo = usuario.Apodo ?? string.Empty; // Asegura que apodo no sea nulo
+                    await AuthService.SetNombreUsuario(usuario.NombreCompleto, apodo, usuario.IdUsuario); // Pasa el ID del usuario
                     NavigationManager.NavigateTo("/");
                 }
             }

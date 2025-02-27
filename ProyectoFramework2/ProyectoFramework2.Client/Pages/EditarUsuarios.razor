@@ -19,7 +19,7 @@ else
     </div>
     <div>
         <label for="Edad">Edad:</label>
-        <InputNumber id="Edad" name="Edad" @bind-Value="Usuario.FechaNacimiento" class="form-control" />
+        <InputDate id="Edad" name="Edad" @bind-Value="Usuario.FechaNacimiento" class="form-control" />
     </div>
     <div>
         <label for="Correo">Correo:</label>
@@ -27,7 +27,12 @@ else
     </div>
     <div>
         <label for="Genero">Genero:</label>
-        <InputText id="Genero" name="Genero" @bind-Value="Usuario.Genero" class="form-control" />
+        <InputSelect id="Genero" @bind-Value="Usuario.Genero" class="form-control">
+            <option value="" disabled selected>Selecione su Genero</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+            <option value="O">Otro</option>
+        </InputSelect>
     </div>
     <button type="submit" class="btn btn-primary">Guardar</button>
 </EditForm>
