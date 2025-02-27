@@ -1,5 +1,4 @@
 ﻿@page "/estadisticas"
-@page "/usuario/{id:int}"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
@@ -123,7 +122,7 @@
 
     public class HabitoInfo
     {
-        public string Titulo { get; set; }
+        public required string Titulo { get; set; }
         public int Progreso { get; set; }
     }
 }
