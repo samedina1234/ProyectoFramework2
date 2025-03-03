@@ -18,6 +18,22 @@ namespace ProyectoFramework2.Controller
             _context = context;
         }
 
+        [HttpGet("categorias")]
+        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
+        {
+            return await _context.Categorias.ToListAsync();
+        }
+
+        [HttpGet("subcategorias/{CategoriaId}")]
+        public async Task<ActionResult<IEnumerable<Subcategoria>>> GetSubcategoriasPorCategoria(int CategoriaId)
+        {
+            var subcategorias = await _context.Subcategorias
+                .Where(s => s.CategoriaId == CategoriaId)
+                .ToListAsync();
+
+            return subcategorias;
+        }
+
         [HttpPost("categoria")]
         public async Task<ActionResult<Categoria>> CrearCategoria([FromBody] Categoria categoria)
         {
@@ -31,7 +47,7 @@ namespace ProyectoFramework2.Controller
 
             return CreatedAtAction(nameof(CrearCategoria), new { id = categoria.CategoriaId }, categoria);
         }
-
+        
         [HttpPost("subcategoria")]
         public async Task<ActionResult<Subcategoria>> CrearSubcategoria([FromBody] Subcategoria subcategoria)
         {
@@ -56,7 +72,6 @@ namespace ProyectoFramework2.Controller
         {
             try
             {
-
                 _context.Habitos.Add(habito);
                 await _context.SaveChangesAsync();
 
@@ -74,13 +89,7 @@ namespace ProyectoFramework2.Controller
                 Console.WriteLine($"Error inesperado al crear el hábito: {ex.Message} - {ex.StackTrace}");
                 return StatusCode(500, "Error interno del servidor.");
             }
-        }
-
-        [HttpGet("subcategorias")]
-        public async Task<ActionResult<IEnumerable<Subcategoria>>> GetSubcategorias()
-        {
-            return await _context.Subcategorias.ToListAsync();
-        }
+        } 
     }
 }
 

@@ -1,295 +1,175 @@
-﻿@page "/new-habito"
+﻿@page "/subcategorias"
 @using System.Diagnostics
 @inject HttpClient Http
-@using static System.Net.WebRequestMethods
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <PageTitle>Nuevo Hábito</PageTitle>
 
+<EditForm id="Nuevo Habito Form" Model="Categoria">
+    <label for="Categoria">Categoría:</label>
+    <InputSelect id="Categoria" @bind-Value="Categoria.CategoriaId" class="form-control" required>
+        <option value="0" >Seleccione su Categoría</option>
+        @foreach (var categoria in Categorias)
+        {
+            <option value="@categoria.CategoriaId">@categoria.Nombre</option>
+        }
+    </InputSelect>
+    <button class="btn btn-primay" onclick="@(() => EnviarCategoria(Categoria.CategoriaId))" disabled="@(Categoria.CategoriaId == 0)">Seleccionar Categoria</button>
+</EditForm>
+
+@if (MostrarMensajeError)
+{
+    <p style="color: red;">Por favor, seleccione una categoría.</p>
+}
+
+@code {
+    public Categoria Categoria { get; set; } = new Categoria();
+    public List<Categoria> Categorias { get; set; } = new List<Categoria>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categorias = await Http.GetFromJsonAsync<List<Categoria>>("api/new-habito/categorias");
+    }
+
+    private bool MostrarMensajeError = false;
+
+    void EnviarCategoria(int id)
+    {
+        if (id != 0)
+        {
+            NavigationManager.NavigateTo($"/nuevo-habito/{id}");
+            MostrarMensajeError = false; // Ocultar el mensaje de error
+        }
+        else
+        {
+            MostrarMensajeError = true; // Mostrar el mensaje de error
+        }
+    }
+}
 <style>
-    .container {
-        width: 500px;
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-        text-align: center;
+  .container {
+   width: 500px;
+   background: white;
+   padding: 25px;
+   border-radius: 12px;
+   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+   text-align: center;
+  }
+
+  .back-button {
+   text-decoration: none;
+   color: #444;
+   font-size: 14px;
+   display: block;
+   text-align: left;
+   margin-bottom: 15px;
+   font-weight: bold;
+  }
+
+  .title {
+   font-size: 26px;
+   font-weight: bold;
+   margin-bottom: 20px;
+  }
+
+  .input-group {
+   margin-top: 20px;
+   text-align: left;
+  }
+
+  label {
+   font-size: 16px;
+   font-weight: 600;
+   display: block;
+   margin-bottom: 5px;
+  }
+
+  input, select, textarea {
+   width: 100%;
+   padding: 12px;
+   margin-top: 5px;
+   border: 1px solid #ccc;
+   border-radius: 6px;
+   font-size: 16px;
+  }
+
+  .duration-options {
+   display: flex;
+   justify-content: center;
+   gap: 12px;
+   margin-top: 10px;
+  }
+
+   .duration-options button {
+    padding: 12px 18px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+   }
+
+    .duration-options button:hover {
+     background: #ffbaba;
     }
 
-    .back-button {
-        text-decoration: none;
-        color: #444;
-        font-size: 14px;
-        display: block;
-        text-align: left;
-        margin-bottom: 15px;
-        font-weight: bold;
+    .duration-options button.active {
+     background: #ff6b6b;
+     color: white;
+     border: none;
     }
 
-    .title {
-        font-size: 26px;
-        font-weight: bold;
-        margin-bottom: 20px;
+  .color-options {
+   display: flex;
+   justify-content: center;
+   gap: 15px;
+   margin-top: 12px;
+  }
+
+   .color-options div {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.3s;
+   }
+
+    .color-options div:hover {
+     transform: scale(1.2);
     }
 
-    .input-group {
-        margin-top: 20px;
-        text-align: left;
+    .color-options div.selected {
+     border: 3px solid black;
     }
 
-    label {
-        font-size: 16px;
-        font-weight: 600;
-        display: block;
-        margin-bottom: 5px;
-    }
+  .details {
+   background: #eee;
+   padding: 12px;
+   border-radius: 6px;
+   font-size: 14px;
+   color: #555;
+   text-align: center;
+  }
 
-    input, select, textarea {
-        width: 100%;
-        padding: 12px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 16px;
-    }
+  .btn {
+   display: block;
+   width: 100%;
+   padding: 12px;
+   background: #ff6b6b;
+   color: white;
+   font-size: 18px;
+   font-weight: bold;
+   border: none;
+   border-radius: 8px;
+   margin-top: 20px;
+   cursor: pointer;
+   transition: 0.3s;
+  }
 
-    .duration-options {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 10px;
-    }
-
-        .duration-options button {
-            padding: 12px 18px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: white;
-            cursor: pointer;
-            font-size: 14px;
-            transition: 0.3s;
-        }
-
-            .duration-options button:hover {
-                background: #ffbaba;
-            }
-
-            .duration-options button.active {
-                background: #ff6b6b;
-                color: white;
-                border: none;
-            }
-
-    .color-options {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 12px;
-    }
-
-        .color-options div {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: 0.3s;
-        }
-
-            .color-options div:hover {
-                transform: scale(1.2);
-            }
-
-            .color-options div.selected {
-                border: 3px solid black;
-            }
-
-    .details {
-        background: #eee;
-        padding: 12px;
-        border-radius: 6px;
-        font-size: 14px;
-        color: #555;
-        text-align: center;
-    }
-
-    .btn {
-        display: block;
-        width: 100%;
-        padding: 12px;
-        background: #ff6b6b;
-        color: white;
-        font-size: 18px;
-        font-weight: bold;
-        border: none;
-        border-radius: 8px;
-        margin-top: 20px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-        .btn:hover {
-            background: #ff4f4f;
-        }
+   .btn:hover {
+    background: #ff4f4f;
+   }
 </style>
-
-<form id="nuevaCategoriaForm" >
-    <label for="NombreCategoria">Categoría:</label>
-    <input type="text" id="NombreCategoria" name="NombreCategoria" required><br><br>
-
-    <button type="button" onclick="enviarCategoria()">Crear Categoría</button>
-</form>
-
-<form id="NuevaSubcategoriaForm">
-    <label for="CategoriaId">Categoría ID:</label>
-    <input type="number" id="CategoriaId" name="CategoriaId" required><br><br>
-
-    <label for="NombreSubcategoria">Nombre:</label>
-    <input type="text" id="NombreSubcategoria" name="NombreSubcategoria" required><br><br>
-
-    <button type="button" onclick="enviarSubcategoria()">Crear Subcategoría</button>
-</form>
-
-<form id="NuevoHabitoForm">
-    <label for="SubcategoriaId">Subcategoría:</label>
-    <select id="SubcategoriaId" name="SubcategoriaId"></select><br><br>
-
-    <label for="Meta">Meta (YYYY-MM-DD):</label>
-    <input type="date" id="Meta" name="Meta" required><br><br>
-
-    <label for="Duracion">Duración:</label>
-    <input type="number" id="Duracion" name="Duracion"><br><br>
-
-    <label for="Color">Color:</label>
-    <input type="color" id="Color" name="Color" required><br><br>
-
-    <label for="Frecuencia">Frecuencia:</label>
-    <select id="Frecuencia" name="Frecuencia">
-        <option value="M">Mañana (M)</option>
-        <option value="D">Día (D)</option>
-        <option value="N">Noche (N)</option>
-        <option value="T">Tarde (T)</option>
-    </select><br><br>
-
-    <button type="button" onclick="enviarHabito()">Crear Hábito</button>
-</form>
-
-<script>
-    // Cargar subcategorías al cargar la página
-    window.onload = function() {
-        cargarSubcategorias();
-    };
-
-    async function cargarSubcategorias() {
-        try {
-            const response = await fetch('/api/new-habito/subcategorias');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const subcategorias = await response.json();
-
-            const selectSubcategoria = document.getElementById('SubcategoriaId');
-            selectSubcategoria.innerHTML = '<option value="">Seleccionar Subcategoría</option>';
-
-            subcategorias.forEach(subcategoria => {
-                const option = document.createElement('option');
-                option.value = subcategoria.subcategoriaId;
-                option.textContent = subcategoria.nombre;
-                selectSubcategoria.appendChild(option);
-            });
-        } catch (error) {
-            console.error('Error al cargar subcategorías:', error);
-            alert('Error al cargar subcategorías: ' + error.message);
-        }
-    }
-
-    async function enviarCategoria() {
-        const formData = {
-            nombre: document.getElementById('NombreCategoria').value
-        };
-
-        try {
-            const response = await fetch('/api/new-habito/categoria', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Categoría creada:', data);
-            alert('Categoría creada con éxito.');
-            // Limpiar el campo del formulario
-            document.getElementById('NombreCategoria').value = '';
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error al crear categoría: ' + error.message);
-        }
-    }
-
-    async function enviarSubcategoria() {
-        const formData = {
-            categoriaId: parseInt(document.getElementById('CategoriaId').value),
-            nombre: document.getElementById('NombreSubcategoria').value
-        };
-
-        try {
-            const response = await fetch('/api/new-habito/subcategoria', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Subcategoría creada:', data);
-            alert('Subcategoría creada con éxito.');
-            // Limpiar los campos del formulario
-            document.getElementById('CategoriaId').value = '';
-            document.getElementById('NombreSubcategoria').value = '';
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error al crear subcategoría: ' + error.message);
-        }
-    }
-
-    async function enviarHabito() {
-        const formData = {
-            subcategoriaId: parseInt(document.getElementById('SubcategoriaId').value),
-            meta: document.getElementById('Meta').value ? document.getElementById('Meta').value : null,
-            duracion: parseInt(document.getElementById('Duracion').value),
-            color: document.getElementById('Color').value,
-            frecuencia: document.getElementById('Frecuencia').value
-        };
-
-        try {
-            const response = await fetch('/api/new-habito/habito', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Hábito creado:', data);
-            alert('Hábito creado con éxito.');
-            // Limpiar los campos del formulario
-            document.getElementById('SubcategoriaId').value = '';
-            document.getElementById('Meta').value = '';
-            document.getElementById('Duracion').value = '';
-            document.getElementById('Color').value = '';
-            document.getElementById('Frecuencia').value = 'M';
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error al crear hábito: ' + error.message);
-        }
-    }
-</script>

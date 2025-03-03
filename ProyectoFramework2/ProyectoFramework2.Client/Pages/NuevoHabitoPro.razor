@@ -1,0 +1,91 @@
+﻿@page "/nuevo-habito/{CategoriaId:int}"
+@using System.Diagnostics
+@inject HttpClient Http
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+<h3>NuevoHabitoPro</h3>
+<EditForm id="Nuevo Habito Pro Form" Model="Habito" OnValidSubmit="HandleSubmit">
+    <div>
+    <label for="SubCategorias">SubCategoría:</label>
+    <InputSelect id="SubCategorias" @bind-Value="Habito.SubcategoriaId" class="form-control" required>
+        <option value="" disabled selected>Seleccione su Sub Categoría</option>
+        @foreach (var subcategoria in SubCategoriasFiltradas)
+        {
+            <option value="@subcategoria.SubcategoriaId">@subcategoria.Nombre</option>
+        }
+		</InputSelect>
+	</div>
+    <div>
+        <label for="Meta">Meta:</label>
+        <InputDate id="Meta" name="Meta" @bind-Value="Habito.Meta" class="form-control" required />
+    </div>
+    <div>
+        <label for="Duracion">Minutos:</label>
+        <InputNumber id="Duracion" name="Duracion" @bind-Value="Habito.Duracion" class="form-control" required />
+    </div>
+    <div>
+        <label for="Color">Color:</label>
+        <input type="color" id="Color" name="Color" @bind="Habito.Color" class="form-control" required />
+    </div>
+    <div>
+        <label for="Frecuencia">Frecuencia:</label>
+        <InputSelect id="Frecuencia" @bind-Value="Habito.Frecuencia" class="form-control" required>
+            <option value="" disabled selected>Selecione su Frecuencia</option>
+            <option value="M">Mañana</option>
+            <option value="T">Tarde</option>
+            <option value="N">Noche</option>
+            <option value="D">Todo el Dia</option>
+        </InputSelect>
+    </div>
+    <button type="submit">Crear Hábito</button>
+</EditForm>
+@code {
+    [Parameter]
+    public int CategoriaId { get; set; }
+    public Habito Habito { get; set; } = new Habito();
+    public Categoria Categoria { get; set; } = new Categoria();
+    public List<Categoria> Categorias { get; set; } = new List<Categoria>();
+    public List<Subcategoria> SubCategoriasFiltradas { get; set; } = new List<Subcategoria>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categorias = await Http.GetFromJsonAsync<List<Categoria>>("api/new-habito/categorias");
+        SubCategoriasFiltradas = await Http.GetFromJsonAsync<List<Subcategoria>>($"api/new-habito/subcategorias/{CategoriaId}");
+    }
+
+    private async Task CategoriaSeleccionada(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value.ToString(), out int categoriaId))
+        {
+            Categoria.CategoriaId = categoriaId;
+            Console.WriteLine($"CategoriaId seleccionado: {categoriaId}, Categoria.CategoriaId: {Categoria.CategoriaId}");
+            SubCategoriasFiltradas = await Http.GetFromJsonAsync<List<Subcategoria>>($"api/new-habito/subcategorias/{categoriaId}");
+        }
+        else
+        {
+            SubCategoriasFiltradas.Clear();
+        }
+        await InvokeAsync(StateHasChanged); // Forzar la actualización
+    }
+
+    private async Task HandleSubmit()
+    {
+        // Lógica para manejar el envío del formulario
+        try
+        {
+            var result = await Http.PostAsJsonAsync("api/new-habito/habito", Habito);
+            if (result.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Habito creado con exito");
+            }
+            else
+            {
+                Console.WriteLine("Error al crear habito");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al crear habito: {ex.Message}");
+        }
+    }
+}
