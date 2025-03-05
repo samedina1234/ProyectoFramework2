@@ -25,5 +25,6 @@ namespace ProyectoFramework2.Shared.Entities
         public virtual ICollection<RegistroHabito> RegistroHabitos { get; set; } = new List<RegistroHabito>();
 
         public virtual Subcategoria? Subcategoria { get; set; }
+        public int UsuarioId { get; set; }
     }
 }

@@ -1,36 +1,44 @@
 ﻿@page "/"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@using ProyectoFramework2.Components
+
 
 
 <div class="container">
-    <!-- Calendario y Contador -->
-    <div class="grid">
-        <div class="calendar">
-            <div class="calendar-header">📅 June 2022</div>
-            <div class="calendar-body">
-                <div class="day">S</div><div class="day">M</div><div class="day">T</div><div class="day">W</div><div class="day">T</div><div class="day">F</div><div class="day">S</div>
-                <div class="date">1</div><div class="date">2</div><div class="date">3</div><div class="date">4</div>
-                <div class="date">5</div><div class="date">6</div><div class="date active">7</div>
+    <div class="container">
+        <div class="calendar-counter-container">
+            <div class="static-calendar">
+                <div class="static-calendar-body">
+                    <div class="day">LU</div><div class="day">MA</div><div class="day">MI</div><div class="day">JU</div><div class="day">VI</div><div class="day">SA</div><div class="day">DO</div>
+                    <div class="date other-month">24</div><div class="date other-month">25</div><div class="date other-month">26</div><div class="date other-month">27</div><div class="date other-month">28</div><div class="date other-month">1</div><div class="date other-month">2</div>
+                    <div class="date">3</div><div class="date active">4</div><div class="date">5</div><div class="date">6</div><div class="date">7</div><div class="date">8</div><div class="date">9</div>
+                    <div class="date">10</div><div class="date">11</div><div class="date">12</div><div class="date">13</div><div class="date">14</div><div class="date">15</div><div class="date">16</div>
+                    <div class="date">17</div><div class="date">18</div><div class="date">19</div><div class="date">20</div><div class="date">21</div><div class="date">22</div><div class="date">23</div>
+                    <div class="date">24</div><div class="date">25</div><div class="date">26</div><div class="date">27</div><div class="date">28</div><div class="date">29</div><div class="date">30</div>
+                    <div class="date">31</div><div class="date other-month">1</div><div class="date other-month">2</div><div class="date other-month">3</div><div class="date other-month">4</div><div class="date other-month">5</div><div class="date other-month">6</div>
+                </div>
+            </div>
+
+            <div class="counter">
+                <div class="streak-icon"></div>
+                <img src="https://i.pinimg.com/736x/92/05/a2/9205a2141d9ac9764b3a1b9c409d722e.jpg" alt="Alternate Text" />
+                <h2>¡365! DÍAS</h2>
+                <div class="days">
+                    <span class="day-box">L</span><span class="day-box">M</span><span class="day-box">X</span><span class="day-box">J</span><span class="day-box">V</span><span class="day-box">S</span><span class="day-box">D</span>
+                </div>
             </div>
         </div>
-        <div class="counter">
-            <h2>🔥 ¡365! DÍAS</h2>
-            <div class="days">
-                <span class="day-box">L</span><span class="day-box">M</span><span class="day-box">X</span><span class="day-box">J</span><span class="day-box">V</span><span class="day-box">S</span><span class="day-box">D</span>
-            </div>
+
+        <div class="filters">
+            <button class="btn active">TODOS</button>
+            <button class="btn">🌞 MAÑANA</button>
+            <button class="btn">🌆 TARDE</button>
+            <button class="btn">🌙 NOCHE</button>
         </div>
     </div>
-
-
-    <!-- Botones de filtro -->
-    <div class="filters">
-        <button class="btn active">TODOS</button>
-        <button class="btn">🌞 MAÑANA</button>
-        <button class="btn">🌆 TARDE</button>
-        <button class="btn">🌙 NOCHE</button>
-    </div>
-
     <!-- Lista de Hábitos -->
-    <div class="habits">
+    @* <div class="habits">
         @foreach (var habit in Habits)
         {
             <div class="habit-card">
@@ -42,47 +50,129 @@
                 <span class="status">✔ Listo</span>
             </div>
         }
+    </div> *@
+    <div class="container">
+        <div class="subcategorias">
+            @if (Subcategorias == null)
+            {
+                <p>Cargando subcategorías...</p>
+            }
+            else
+            {
+                @foreach (var subcategoria in Subcategorias.Take(4))
+                {
+                    <div class="subcategoria-card">
+                        <div class="card-left">
+                            <label>
+                                <input type="checkbox" @bind="subcategoria.IsCompleted" />
+                                <span class="checkbox-custom"></span>
+                            </label>
+                            <div class="card-icon">
+                                @if (subcategoria.Icon != null)
+                                {
+                                    <i class="@subcategoria.Icon"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-question"></i>
+                                }
+                            </div>
+                            <div class="card-details">
+                                <span class="card-title">@subcategoria.Nombre</span>
+                                <span class="card-subtitle">Hábito</span>
+                            </div>
+                        </div>
+                        <div class="card-right">
+                            <span class="status @(subcategoria.IsCompleted ? "completed" : "pending")">
+                                @(subcategoria.IsCompleted ? "Completado" : "Pendiente")
+                            </span>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
     </div>
 </div>
 
+
+
+
+@code {
+    private List<Subcategoria> Subcategorias;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Construir la URL absoluta
+        string apiUrl = "https://localhost:7040/api/Home/subcategorias"; // Reemplaza con la URL correcta
+        Subcategorias = await Http.GetFromJsonAsync<List<Subcategoria>>(apiUrl);
+    }
+
+    private List<Habit> Habits = new()
+    {
+        new Habit { IsCompleted = true },
+        new Habit { IsCompleted = false },
+        new Habit { IsCompleted = true },
+        new Habit { IsCompleted = false }
+    };
+
+    class Habit
+    {
+        public bool IsCompleted { get; set; }
+    }
+    public class Subcategoria
+    {
+        public string Nombre { get; set; }
+        public string Icon { get; set; }
+        public bool IsCompleted { get; set; }
+    }
+}
+
 <style>
-    .container {
-        max-width: 900px;
-        margin: auto;
-        text-align: center;
-        font-family: 'Poppins', sans-serif;
+    /* Variables CSS */
+    :root {
+        --primary-color: #007bff;
+        --background-color: #f5f5f5;
+        --text-color: #333;
+        --light-gray: #e0e0e0;
+        --dark-gray: #666;
     }
 
-    /* Calendario */
-    .calendar {
-        background: linear-gradient(135deg, #2A2D43, #3E4165);
+    /* Calendario Estático */
+    .static-calendar {
+        width: 60%;
+        max-width: 600px;
+        background-color: #222;
         color: white;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        border-radius: 20px;
+        font-family: sans-serif;
+        box-sizing: border-box;
     }
 
-    .calendar-header {
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    .calendar-body {
+    .static-calendar-body {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 10px;
+        gap: 12px;
+        margin-bottom: 0;
     }
 
     .day, .date {
-        padding: 10px;
-        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        border-radius: 10px;
         font-weight: bold;
+        font-size: 18px;
     }
 
         .date.active {
-            background: #ff7b00;
+            background-color: var(--primary-color);
             color: white;
+        }
+
+        .date.other-month {
+            color: var(--dark-gray);
         }
 
     /* Contador */
@@ -93,23 +183,42 @@
         font-size: 18px;
         font-weight: bold;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
     }
 
-    .days .day-box {
-        background: #e0e0e0;
-        padding: 5px 10px;
-        border-radius: 5px;
-        margin: 3px;
-        display: inline-block;
-        font-weight: bold;
+        .counter img { /* Estilos para la imagen dentro del contador */
+            width: 350px; /* Ajusta el ancho de la imagen */
+            height: auto; /* Mantiene la proporción de la imagen */
+            margin-bottom: 10px; /* Espacio entre la imagen y el texto */
+        }
+
+    .streak-icon {
+        font-size: 80px; /* Tamaño grande para el icono de fuego */
+        margin-bottom: 10px;
+        color: #ff7b00; /* Color naranja para el icono */
     }
+
+    .days {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px; /* Espacio entre el icono y los días */
+    }
+
+        .days .day-box {
+            background: #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 5px;
+            display: inline-block;
+            font-weight: bold;
+        }
 
     /* Filtros */
     .filters {
         display: flex;
         justify-content: center;
         gap: 15px;
-        margin-bottom: 20px;
+        margin-top: 20px;
     }
 
     .btn {
@@ -161,19 +270,89 @@
     input[type="checkbox"]:checked + .checkbox-custom {
         background: #28a745;
     }
+
+    /* Subcategorías */
+    .subcategorias {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .subcategoria-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f8f8;
+        border-radius: 20px;
+        padding: 15px 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-left {
+        display: flex;
+        align-items: center;
+    }
+
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--light-gray);
+        margin-right: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-title {
+        font-weight: 600;
+    }
+
+    .card-subtitle {
+        font-size: 0.8em;
+        color: var(--dark-gray);
+    }
+
+    .card-right {
+        display: flex;
+        align-items: center;
+    }
+
+    .status {
+        color: green;
+        font-size: 1.2em;
+    }
+
+    input[type="checkbox"]:checked + .checkbox-custom {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .card-icon i {
+        font-size: 1.5em;
+        color: #555;
+    }
+
+    .status.completed {
+        color: green;
+    }
+
+    .status.pending {
+        color: gray;
+    }
+
+    /* Contenedor de Calendario y Contador */
+    .calendar-counter-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
 </style>
 
-@code {
-    private List<Habit> Habits = new()
-    {
-        new Habit { IsCompleted = true },
-        new Habit { IsCompleted = false },
-        new Habit { IsCompleted = true },
-        new Habit { IsCompleted = false }
-    };
 
-    class Habit
-    {
-        public bool IsCompleted { get; set; }
-    }
-}
