@@ -10,9 +10,10 @@
         <div class="calendar-counter-container">
             <div class="static-calendar">
                 <div class="static-calendar-body">
+
                     <div class="day">LU</div><div class="day">MA</div><div class="day">MI</div><div class="day">JU</div><div class="day">VI</div><div class="day">SA</div><div class="day">DO</div>
                     <div class="date other-month">24</div><div class="date other-month">25</div><div class="date other-month">26</div><div class="date other-month">27</div><div class="date other-month">28</div><div class="date other-month">1</div><div class="date other-month">2</div>
-                    <div class="date">3</div><div class="date active">4</div><div class="date">5</div><div class="date">6</div><div class="date">7</div><div class="date">8</div><div class="date">9</div>
+                    <div class="date">3</div><div class="date ">4</div><div class="date active">5</div><div class="date">6</div><div class="date">7</div><div class="date">8</div><div class="date">9</div>
                     <div class="date">10</div><div class="date">11</div><div class="date">12</div><div class="date">13</div><div class="date">14</div><div class="date">15</div><div class="date">16</div>
                     <div class="date">17</div><div class="date">18</div><div class="date">19</div><div class="date">20</div><div class="date">21</div><div class="date">22</div><div class="date">23</div>
                     <div class="date">24</div><div class="date">25</div><div class="date">26</div><div class="date">27</div><div class="date">28</div><div class="date">29</div><div class="date">30</div>
@@ -22,12 +23,13 @@
 
             <div class="counter">
                 <div class="streak-icon"></div>
-                <img src="https://i.pinimg.com/736x/92/05/a2/9205a2141d9ac9764b3a1b9c409d722e.jpg" alt="Alternate Text" />
-                <h2>¡365! DÍAS</h2>
+                <img src="https://i.pinimg.com/736x/3c/90/56/3c90564a4b0565937be446e7bc4839c4.jpg" alt="Alternate Text" />
+                <h2>@DaysSinceRegistration DÍAS</h2>
                 <div class="days">
                     <span class="day-box">L</span><span class="day-box">M</span><span class="day-box">X</span><span class="day-box">J</span><span class="day-box">V</span><span class="day-box">S</span><span class="day-box">D</span>
                 </div>
             </div>
+
         </div>
 
         <div class="filters">
@@ -37,6 +39,8 @@
             <button class="btn">🌙 NOCHE</button>
         </div>
     </div>
+
+    @* <img src="https://i.pinimg.com/736x/3c/90/56/3c90564a4b0565937be446e7bc4839c4.jpg" alt="Alternate Text" /> *@
     <!-- Lista de Hábitos -->
     @* <div class="habits">
         @foreach (var habit in Habits)
@@ -51,53 +55,99 @@
             </div>
         }
     </div> *@
-    <div class="container">
-        <div class="subcategorias">
-            @if (Subcategorias == null)
-            {
-                <p>Cargando subcategorías...</p>
-            }
-            else
-            {
-                @foreach (var subcategoria in Subcategorias.Take(4))
+    
+        <div class="container">
+            <div class="subcategorias">
+                @if (Subcategorias == null)
                 {
-                    <div class="subcategoria-card">
-                        <div class="card-left">
-                            <label>
-                                <input type="checkbox" @bind="subcategoria.IsCompleted" />
-                                <span class="checkbox-custom"></span>
-                            </label>
-                            <div class="card-icon">
-                                @if (subcategoria.Icon != null)
-                                {
-                                    <i class="@subcategoria.Icon"></i>
-                                }
-                                else
-                                {
-                                    <i class="fas fa-question"></i>
-                                }
-                            </div>
-                            <div class="card-details">
-                                <span class="card-title">@subcategoria.Nombre</span>
-                                <span class="card-subtitle">Hábito</span>
-                            </div>
-                        </div>
-                        <div class="card-right">
-                            <span class="status @(subcategoria.IsCompleted ? "completed" : "pending")">
-                                @(subcategoria.IsCompleted ? "Completado" : "Pendiente")
-                            </span>
-                        </div>
-                    </div>
+                    <p>Cargando subcategorías...</p>
                 }
-            }
+                else
+                {
+                    @foreach (var subcategoria in Subcategorias.Take(4))
+                    {
+                        <div class="subcategoria-card">
+                            <div class="card-left">
+                                <label>
+                                    <input type="checkbox" @bind="subcategoria.IsCompleted" />
+                                    <span class="checkbox-custom"></span>
+                                </label>
+                                <div class="card-icon">
+                                    @if (subcategoria.Icon != null)
+                                    {
+                                        <i class="@subcategoria.Icon"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-question"></i>
+                                    }
+                                </div>
+                                <div class="card-details">
+                                    <span class="card-title">@subcategoria.Nombre</span>
+                                    <span class="card-subtitle">Hábito</span>
+                                </div>
+                            </div>
+                            <div class="card-right">
+                                <span class="status @(subcategoria.IsCompleted ? "completed" : "pending")">
+                                    @(subcategoria.IsCompleted ? "Completado" : "Pendiente")
+                                </span>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
         </div>
     </div>
-</div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.subcategoria-card input[type="checkbox"]');
 
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const card = this.closest('.subcategoria-card');
+                const statusSpan = card.querySelector('.status');
 
+                if (this.checked) {
+                    statusSpan.textContent = 'Completado';
+                    statusSpan.classList.remove('pending');
+                    statusSpan.classList.add('completed');
+                } else {
+                    statusSpan.textContent = 'Pendiente';
+                    statusSpan.classList.remove('completed');
+                    statusSpan.classList.add('pending');
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+        // Obtener la fecha actual
+        const fechaActual = new Date();
+        const diaActual = fechaActual.getDate();
+
+        // Obtener todos los elementos que representan los días del calendario
+        const dias = document.querySelectorAll('.static-calendar-body .date');
+
+        // Iterar sobre cada elemento del día
+        dias.forEach(dia => {
+            // Verificar si el día del elemento coincide con el día actual
+            if (parseInt(dia.textContent) === diaActual) {
+                // Si coincide, agregar la clase 'active'
+                dia.classList.add('active');
+            } else {
+                // Si no coincide, eliminar la clase 'active' (si la tiene)
+                dia.classList.remove('active');
+            }
+        });
+    });
+</script>
 
 @code {
+    private int DaysSinceRegistration = 0;
     private List<Subcategoria> Subcategorias;
 
     protected override async Task OnInitializedAsync()
@@ -105,6 +155,18 @@
         // Construir la URL absoluta
         string apiUrl = "https://localhost:7040/api/Home/subcategorias"; // Reemplaza con la URL correcta
         Subcategorias = await Http.GetFromJsonAsync<List<Subcategoria>>(apiUrl);
+
+        // Simulación de un usuario con FechaRegistro
+        var user = new Usuario { FechaRegistro = new DateOnly(2024, 6, 24) }; // Fecha: 5 de marzo de 2024
+
+        // Calcular los días transcurridos
+        DaysSinceRegistration = CalculateDaysSinceRegistration(user.FechaRegistro);
+    }
+
+    private int CalculateDaysSinceRegistration(DateOnly registrationDate)
+    {
+        var currentDate = new DateOnly(2025, 3, 5); // Fecha actual: 5 de marzo de 2025
+        return currentDate.DayNumber - registrationDate.DayNumber;
     }
 
     private List<Habit> Habits = new()
