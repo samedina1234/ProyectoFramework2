@@ -4,6 +4,44 @@
 @using Microsoft.AspNetCore.Components.Forms
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 <style>
+
+.error-bubble {
+    position: relative;
+    display: inline-block;
+}
+
+.error-bubble span {
+    visibility: hidden;
+    width: 200px;
+    background-color: #f8d7da; /* Color de fondo rojo claro */
+    color: #721c24; /* Color de texto rojo oscuro */
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px; /* Centrar la burbuja */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.error-bubble:hover span {
+    visibility: visible;
+    opacity: 1;
+}
+
+.error-bubble span::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #f8d7da transparent transparent transparent;
+}
     .registro-container {
     max-width: 500px;
     margin: 20px auto;
@@ -102,49 +140,90 @@
 
 @if (Usuario != null)
 {
-	<h1>Crear Usuario</h1>
-    <br/>
-    <h5> Todos los campos con asterisco o " * " son requeridos</h5>
-	<br />
+    <h1>Crear Usuario</h1>
+    <br />
+    <h5>Todos los campos con asterisco o " * " son requeridos</h5>
+    <br />
 }
 else
 {
     <p>Cargando...</p>
 }
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @ErrorMessage
+    </div>
+}
+
 <EditForm Model="Usuario" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
     <div>
         <label for="nombre">* Nombre Completo:</label>
-        <InputText id="nombre" @bind-value="Usuario.NombreCompleto" class="form-control" required/>
+        <InputText id="nombre" @bind-value="Usuario.NombreCompleto" class="form-control" required />
+        @if (mostrarErrores)
+        {
+            <div class="error-bubble">
+                <ValidationMessage For="@(() => Usuario.NombreCompleto)" />
+            </div>
+        }
     </div>
     <div>
         <label for="Edad">* Edad:</label>
         <InputDate id="Edad" @bind-Value="Usuario.FechaNacimiento" class="form-control" required />
+        @if (mostrarErrores)
+        {
+            <div class="error-bubble">
+                <ValidationMessage For="@(() => Usuario.FechaNacimiento)" />
+            </div>
+        }
     </div>
-	<div>
+    <div>
         <div>
             <label for="Genero">* Genero:</label>
             <InputSelect id="Genero" @bind-Value="Usuario.Genero" class="form-control" required>
-                <option value="" disabled selected>Selecione su Genero</option>
+                <option value="" disabled selected>Seleccione su Genero</option>
                 <option value="M">Masculino</option>
                 <option value="F">Femenino</option>
                 <option value="O">Otro</option>
             </InputSelect>
+            @if (mostrarErrores)
+            {
+                <div class="error-bubble">
+                    <ValidationMessage For="@(() => Usuario.Genero)" />
+                </div>
+            }
         </div>
-	</div>
+    </div>
     <div>
         <label for="Correo">* Correo:</label>
         <InputText id="Correo" @bind-Value="Usuario.Correo" class="form-control" required />
+        @if (mostrarErrores)
+        {
+            <div class="error-bubble">
+                <ValidationMessage For="@(() => Usuario.Correo)" />
+            </div>
+        }
     </div>
     <div>
         <label for="Contrasseña">* Contraseña:</label>
         <InputText id="Contrasseña" @bind-Value="Usuario.Contraseña" class="form-control" required />
+        @if (mostrarErrores)
+        {
+            <div class="error-bubble">
+                <ValidationMessage For="@(() => Usuario.Contraseña)" />
+            </div>
+        }
     </div>
-	<button type="submit" class="btn-registrarse">Registrarse</button>
-	<div class="social-login">
-		<p>o Ingresa Con</p>
-		<button class="btn-social google">G</button>
-		<button class="btn-social facebook">f</button>
-	</div>
+    <button type="submit" class="btn-registrarse">Registrarse</button>
+    <div class="social-login">
+        <p>o Ingresa Con</p>
+        <button class="btn-social google">G</button>
+        <button class="btn-social facebook">f</button>
+    </div>
 </EditForm>
 
 @code {
@@ -152,16 +231,18 @@ else
     public int? Id { get; set; }
     public Usuario Usuario { get; set; } = new Usuario();
     public string? CorreoError { get; set; }
+    public string? ErrorMessage { get; set; }
+    private bool mostrarErrores = false;
 
     protected override async Task OnParametersSetAsync()
     {
         if (Id == null)
         {
-            Usuario = new Usuario(); // Inicializa un nuevo usuario si Id es nulo
+            Usuario = new Usuario();
         }
         else
         {
-            await LoadUsuario(); // Carga el usuario si Id no es nulo
+            await LoadUsuario();
         }
     }
 
@@ -169,12 +250,17 @@ else
 
     private async Task HandleSubmit()
     {
+        mostrarErrores = true; // Mostrar errores al enviar el formulario
         if (Id == null)
         {
-            var result = await Http.PostAsJsonAsync("api/usuario", Usuario);
+            var result = await Http.PostAsJsonAsync("api/usuario/registro", Usuario);
             if (result.IsSuccessStatusCode)
             {
                 NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                ErrorMessage = "Error al registrar el usuario. Por favor, verifica los datos.";
             }
         }
         else

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoFramework2.Client.Pages;
 using ProyectoFramework2.Data;
 using ProyectoFramework2.Shared.Entities;
 
@@ -11,10 +13,12 @@ namespace ProyectoFramework2.Controller
     [ApiController]
     public class UsuarioController : ControllerBase
     {
+        private readonly ContraseñaHash _passwordHasher;
         private readonly HabitosContext _context;
 
-        public UsuarioController(HabitosContext context)
+        public UsuarioController(HabitosContext context, ContraseñaHash passwordHasher)
         {
+            _passwordHasher = passwordHasher;
             _context = context;
         }
 
@@ -51,13 +55,33 @@ namespace ProyectoFramework2.Controller
             return Ok(dbUsuario);
         }
 
-        [HttpPost] // Crear un usuario
+        [HttpPost ("registro")] // Crear un usuario
         public async Task<ActionResult<Usuario>> AddUsuarioAsync(Usuario newUsuario)
         {
-            _context.Add(newUsuario);
-            await _context.SaveChangesAsync();
+            //_context.Add(newUsuario);
+            //await _context.SaveChangesAsync();
+            //return Ok(newUsuario);
 
-            return Ok(newUsuario);
+            try
+            {
+                newUsuario.Contraseña = _passwordHasher.HashPassword(newUsuario.Contraseña);
+                _context.Usuarios.Add(newUsuario);
+                await _context.SaveChangesAsync();
+                return Ok(newUsuario);
+            }
+            catch (DbUpdateException ex)
+            {
+                // Manejar errores de base de datos (por ejemplo, restricciones de unicidad)
+                // Registra el error en los logs
+                return BadRequest("Error al guardar el usuario: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Manejar otros errores
+                // Registra el error en los logs
+                return StatusCode(500, "Error interno del servidor: " + ex.Message);
+            }
         }
+
     }
 }

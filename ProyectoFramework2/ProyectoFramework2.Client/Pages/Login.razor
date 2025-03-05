@@ -143,17 +143,24 @@
             var result = await Http.PostAsJsonAsync("api/auth/login", loginRequest);
             if (result.IsSuccessStatusCode)
             {
-                var usuario = await result.Content.ReadFromJsonAsync<Usuario>();
-                if (usuario != null)
+                if (result.Content != null && result.Content.Headers.ContentType?.MediaType == "application/json")
                 {
-                    var apodo = usuario.Apodo ?? string.Empty; // Asegura que apodo no sea nulo
-                    await AuthService.SetNombreUsuario(usuario.NombreCompleto, apodo, usuario.IdUsuario); // Pasa el ID del usuario
-                    NavigationManager.NavigateTo("/");
+                    var usuario = await result.Content.ReadFromJsonAsync<Usuario>();
+                    if (usuario != null)
+                    {
+                        var apodo = usuario.Apodo ?? string.Empty;
+                        await AuthService.SetNombreUsuario(usuario.NombreCompleto, apodo, usuario.IdUsuario);
+                        NavigationManager.NavigateTo("/");
+                    }
+                }
+                else
+                {
+                    errorMessage = "Respuesta del servidor no es JSON válido";
                 }
             }
             else
             {
-                errorMessage = await result.Content.ReadAsStringAsync(); // Obtiene el mensaje de error del API
+                errorMessage = await result.Content.ReadAsStringAsync();
             }
         }
         catch (Exception ex)

@@ -4,12 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoFramework2.Client.Pages;
 using ProyectoFramework2.Components;
 using ProyectoFramework2.Data;
+using ProyectoFramework2.Shared.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<HttpClient>();
+
+builder.Services.AddScoped<ContraseñaHash>();
 
 builder.Services.AddScoped<ProyectoFramework2.Client.Servicios.AuthenticationService>();
 
