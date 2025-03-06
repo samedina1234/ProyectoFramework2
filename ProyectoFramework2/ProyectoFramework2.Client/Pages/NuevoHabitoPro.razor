@@ -1,6 +1,7 @@
 ﻿@page "/nuevo-habito/{CategoriaId:int}"
 @using System.Diagnostics
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <h3>NuevoHabitoPro</h3>
@@ -41,6 +42,9 @@
 </EditForm>
 @code {
     [Parameter]
+    public int id { get; set; }
+
+    [Parameter]
     public int CategoriaId { get; set; }
     public Habito Habito { get; set; } = new Habito();
     public Categoria Categoria { get; set; } = new Categoria();
@@ -49,6 +53,18 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var userIdString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "idUsuario", null);
+        if (!string.IsNullOrEmpty(userIdString) && int.TryParse(userIdString, out int userId))
+        {
+            id = userId;
+        }
+        else
+        {
+            // Manejar el caso en que el usuario no está logueado o el ID no es válido.
+            Console.WriteLine("Usuario no logueado o ID de usuario inválido.");
+            // Puedes redirigir al usuario a la página de inicio de sesión o mostrar un mensaje de error.
+        }
+
         Categorias = await Http.GetFromJsonAsync<List<Categoria>>("api/new-habito/categorias");
         SubCategoriasFiltradas = await Http.GetFromJsonAsync<List<Subcategoria>>($"api/new-habito/subcategorias/{CategoriaId}");
     }
@@ -73,6 +89,8 @@
         // Lógica para manejar el envío del formulario
         try
         {
+            Habito.UsuarioId = id;
+
             var result = await Http.PostAsJsonAsync("api/new-habito/habito", Habito);
             if (result.IsSuccessStatusCode)
             {

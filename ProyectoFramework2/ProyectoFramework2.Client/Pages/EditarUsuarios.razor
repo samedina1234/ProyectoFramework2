@@ -66,11 +66,21 @@ else
         }
         else
         {
-            var result = await Http.PutAsJsonAsync($"api/usuario/{Id}", Usuario);
-            if(result.IsSuccessStatusCode)
+            // Crear el DTO y asignar los valores
+            var usuarioUpdateDto = new UsuarioUpdateDto
+                {
+                    Apodo = Usuario.Apodo,
+                    FechaNacimiento = Usuario.FechaNacimiento,
+                    Correo = Usuario.Correo,
+                    Genero = Usuario.Genero
+                };
+
+            var result = await Http.PutAsJsonAsync($"api/usuario/{Id}", usuarioUpdateDto);
+            if (result.IsSuccessStatusCode)
             {
                 NavigationManager.NavigateTo("/");
             }
+        }
         }
     }
 }

@@ -43,7 +43,7 @@ public partial class HabitosContext : DbContext
 
         modelBuilder.Entity<Habito>(entity =>
         {
-            entity.HasKey(e => e.HabitoId).HasName("PK__Habitos__DBBE4A77335D3E76");
+            entity.HasKey(e => e.HabitoId).HasName("PK__Habitos__DBBE4A77528E9495");
 
             entity.Property(e => e.Color)
                 .HasMaxLength(60)
@@ -53,27 +53,32 @@ public partial class HabitosContext : DbContext
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.UsuarioId).HasColumnName("UsuarioID");
 
             entity.HasOne(d => d.Subcategoria).WithMany(p => p.Habitos)
                 .HasForeignKey(d => d.SubcategoriaId)
-                .HasConstraintName("FK__Habitos__Subcate__49C3F6B7");
+                .HasConstraintName("FK__Habitos__Subcate__5DCAEF64");
+
+            entity.HasOne(d => d.Usuario).WithMany(p => p.Habitos)
+                .HasForeignKey(d => d.UsuarioId)
+                .HasConstraintName("FK__Habitos__Usuario__5EBF139D");
         });
 
         modelBuilder.Entity<RegistroHabito>(entity =>
         {
-            entity.HasKey(e => new { e.HabitoId, e.UsuarioId }).HasName("PK__Registro__490D940C01E10754");
+            entity.HasKey(e => new { e.HabitoId, e.UsuarioId }).HasName("PK__Registro__490D940C3EA3F3E7");
 
             entity.Property(e => e.EstadoHabito).HasDefaultValue(true);
 
             entity.HasOne(d => d.Habito).WithMany(p => p.RegistroHabitos)
                 .HasForeignKey(d => d.HabitoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RegistroH__Habit__571DF1D5");
+                .HasConstraintName("FK__RegistroH__Habit__628FA481");
 
             entity.HasOne(d => d.Usuario).WithMany(p => p.RegistroHabitos)
                 .HasForeignKey(d => d.UsuarioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RegistroH__Usuar__5812160E");
+                .HasConstraintName("FK__RegistroH__Usuar__6383C8BA");
         });
 
         modelBuilder.Entity<Subcategoria>(entity =>

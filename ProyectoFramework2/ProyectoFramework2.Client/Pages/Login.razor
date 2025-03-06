@@ -105,9 +105,10 @@
 <h1>Iniciar Sesión</h1>
 
 <EditForm Model="loginRequest" OnValidSubmit="HandleSubmit" FormName="loginForm">
+
     <div>
         <label for="Correo">Correo:</label>
-        <InputText id="Correo" @bind-Value="loginRequest.Correo" class="form-control" required/>
+        <InputText id="Correo" @bind-Value="loginRequest.Correo" class="form-control" required />
     </div>
     <div>
         <label for="Contraseña">Contraseña:</label>
@@ -128,10 +129,10 @@
 
 @code {
     private LoginRequest loginRequest = new LoginRequest
-    {
-        Correo = string.Empty,
-        Contraseña = string.Empty
-    };
+        {
+            Correo = string.Empty,
+            Contraseña = string.Empty
+        };
     private string? errorMessage { get; set; } = string.Empty;
 
     private async Task HandleSubmit()
@@ -143,17 +144,24 @@
             var result = await Http.PostAsJsonAsync("api/auth/login", loginRequest);
             if (result.IsSuccessStatusCode)
             {
-                var usuario = await result.Content.ReadFromJsonAsync<Usuario>();
-                if (usuario != null)
+                if (result.Content != null && result.Content.Headers.ContentType?.MediaType == "application/json")
                 {
-                    var apodo = usuario.Apodo ?? string.Empty; // Asegura que apodo no sea nulo
-                    await AuthService.SetNombreUsuario(usuario.NombreCompleto, apodo, usuario.IdUsuario); // Pasa el ID del usuario
-                    NavigationManager.NavigateTo("/");
+                    var usuario = await result.Content.ReadFromJsonAsync<Usuario>();
+                    if (usuario != null)
+                    {
+                        var apodo = usuario.Apodo ?? string.Empty;
+                        await AuthService.SetNombreUsuario(usuario.NombreCompleto, apodo, usuario.IdUsuario);
+                        NavigationManager.NavigateTo("/");
+                    }
+                }
+                else
+                {
+                    errorMessage = "Respuesta del servidor no es JSON válido";
                 }
             }
             else
             {
-                errorMessage = await result.Content.ReadAsStringAsync(); // Obtiene el mensaje de error del API
+                errorMessage = await result.Content.ReadAsStringAsync();
             }
         }
         catch (Exception ex)

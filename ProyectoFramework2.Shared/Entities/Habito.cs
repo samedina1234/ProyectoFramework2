@@ -12,6 +12,8 @@ namespace ProyectoFramework2.Shared.Entities
 
         public int? SubcategoriaId { get; set; }
 
+        public int? UsuarioId { get; set; }
+
         public DateOnly FechaCreacion { get; set; }
 
         public DateOnly? Meta { get; set; }
@@ -25,5 +27,7 @@ namespace ProyectoFramework2.Shared.Entities
         public virtual ICollection<RegistroHabito> RegistroHabitos { get; set; } = new List<RegistroHabito>();
 
         public virtual Subcategoria? Subcategoria { get; set; }
+
+        public virtual Usuario? Usuario { get; set; }
     }
 }
