@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoFramework2.Client.Pages;
 using ProyectoFramework2.Data;
 using ProyectoFramework2.Shared.Entities;
 
@@ -54,6 +56,8 @@ namespace ProyectoFramework2.Controller
         }
 
         [HttpPost("registro")] // Crear un usuario
+
+
         public async Task<ActionResult<Usuario>> AddUsuarioAsync(Usuario newUsuario)
         {
             //_context.Add(newUsuario);
@@ -80,5 +84,6 @@ namespace ProyectoFramework2.Controller
                 return StatusCode(500, "Error interno del servidor: " + ex.Message);
             }
         }
+
     }
 }

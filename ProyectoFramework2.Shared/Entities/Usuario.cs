@@ -28,7 +28,8 @@ namespace ProyectoFramework2.Shared.Entities
 
         [StringLength(100, MinimumLength = 8, ErrorMessage = "Su NickName o Apodo debe tener al menos 8 caracteres.")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?:.*\d)?(?:.*[!@#$])?.{8,}$",
-ErrorMessage = "Su NickName o Apodo debe contener al menos una letra mayúscula, una letra minúscula, y puede contener opcionalmente un número y/o un carácter especial permitido (!@#$).")]
+        ErrorMessage = "Su NickName o Apodo debe contener al menos una letra mayúscula, una letra minúscula, y puede contener opcionalmente un número y/o un carácter especial permitido (!@#$).")]
+
         public string? Apodo { get; set; }
 
         public string? Genero { get; set; }
@@ -41,6 +42,7 @@ ErrorMessage = "Su NickName o Apodo debe contener al menos una letra mayúscula,
 
         public virtual ICollection<RegistroHabito> RegistroHabitos { get; set; } = new List<RegistroHabito>();
     }
+
     public class MayorDeEdadAttribute : ValidationAttribute
     {
         private readonly int _edadMinima;
@@ -73,3 +75,4 @@ ErrorMessage = "Su NickName o Apodo debe contener al menos una letra mayúscula,
         }
     }
 }
+

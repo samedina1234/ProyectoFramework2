@@ -20,6 +20,7 @@ namespace ProyectoFramework2.Controller
             _passwordHasher = passwordHasher;
             _context = context;
             _logger = logger;
+
         }
 
         [HttpPost("login")] // Endpoint para el login

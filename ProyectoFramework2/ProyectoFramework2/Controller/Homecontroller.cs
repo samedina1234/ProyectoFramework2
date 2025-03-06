@@ -7,6 +7,7 @@ using ProyectoFramework2.Shared.Entities;
 namespace ProyectoFramework2.Controller
 {
     [Route("api/home")]
+
     [ApiController]
     public class Homecontroller : ControllerBase
     {
@@ -19,6 +20,7 @@ namespace ProyectoFramework2.Controller
         }
 
         [HttpGet("subcategoriaspro")]
+
         public async Task<ActionResult<List<Subcategoria>>> GetSubcategorias()
         {
             var subcategorias = await _context.Subcategorias.ToListAsync();
