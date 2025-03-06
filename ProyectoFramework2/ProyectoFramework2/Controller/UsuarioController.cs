@@ -36,26 +36,28 @@ namespace ProyectoFramework2.Controller
         }
 
         [HttpPut("{id}")] // Actualizar un usuario por su id
-        public async Task<ActionResult<Usuario>> UpdateUsuarioAsync(int id, Usuario updatedUsuario)
+        public async Task<ActionResult<Usuario>> UpdateUsuarioAsync(int id, UsuarioUpdateDto updatedUsuarioDto)
         {
             var dbUsuario = await _context.Usuarios.FindAsync(id);
 
             if (dbUsuario == null)
             {
-                return NotFound("No se encontro el Usuario"); // Devuelve 404 si el usuario no se encuentra
+                return NotFound("No se encontro el Usuario");
             }
 
-            dbUsuario.Apodo = updatedUsuario.Apodo;
-            dbUsuario.Correo = updatedUsuario.Correo;
-            dbUsuario.Genero = updatedUsuario.Genero;
-            dbUsuario.FechaNacimiento = updatedUsuario.FechaNacimiento;
+            dbUsuario.Apodo = updatedUsuarioDto.Apodo;
+            dbUsuario.Correo = updatedUsuarioDto.Correo;
+            dbUsuario.Genero = updatedUsuarioDto.Genero;
+            dbUsuario.FechaNacimiento = updatedUsuarioDto.FechaNacimiento;
 
             await _context.SaveChangesAsync();
 
             return Ok(dbUsuario);
         }
 
-        [HttpPost ("registro")] // Crear un usuario
+        [HttpPost("registro")] // Crear un usuario
+
+
         public async Task<ActionResult<Usuario>> AddUsuarioAsync(Usuario newUsuario)
         {
             //_context.Add(newUsuario);

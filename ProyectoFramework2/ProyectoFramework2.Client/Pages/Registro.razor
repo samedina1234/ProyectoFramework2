@@ -5,136 +5,137 @@
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 <style>
 
-.error-bubble {
-    position: relative;
-    display: inline-block;
-}
+    .error-bubble {
+        position: relative;
+        display: inline-block;
+    }
 
-.error-bubble span {
-    visibility: hidden;
-    width: 200px;
-    background-color: #f8d7da; /* Color de fondo rojo claro */
-    color: #721c24; /* Color de texto rojo oscuro */
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -100px; /* Centrar la burbuja */
-    opacity: 0;
-    transition: opacity 0.3s;
-}
+        .error-bubble span {
+            visibility: hidden;
+            width: 200px;
+            background-color: #f8d7da; /* Color de fondo rojo claro */
+            color: #721c24; /* Color de texto rojo oscuro */
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px; /* Centrar la burbuja */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
 
-.error-bubble:hover span {
-    visibility: visible;
-    opacity: 1;
-}
+        .error-bubble:hover span {
+            visibility: visible;
+            opacity: 1;
+        }
 
-.error-bubble span::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #f8d7da transparent transparent transparent;
-}
+        .error-bubble span::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #f8d7da transparent transparent transparent;
+        }
+
     .registro-container {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-family: Arial, sans-serif;
+        max-width: 500px;
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
     }
 
     .btn-back {
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    color: #555;
-    margin-bottom: 10px;
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        color: #555;
+        margin-bottom: 10px;
     }
 
     h2 {
-    font-size: 28px;
-    color: #7D3C98;
-    margin-bottom: 20px;
+        font-size: 28px;
+        color: #7D3C98;
+        margin-bottom: 20px;
     }
 
     .registro-form {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    padding: 15px;
-    border: 2px solid #7D3C98;
-    border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        padding: 15px;
+        border: 2px solid #7D3C98;
+        border-radius: 8px;
     }
 
     label {
-    font-weight: bold;
-    margin-top: 10px;
+        font-weight: bold;
+        margin-top: 10px;
     }
 
     input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
     }
 
     .error {
-    border: 2px solid red;
-    background-color: #ffe6e6;
+        border: 2px solid red;
+        background-color: #ffe6e6;
     }
 
     .error-message {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
     }
 
     .password-box {
-    border: 2px solid blue;
+        border: 2px solid blue;
     }
 
     .btn-registrarse {
-    background: #7D3C98;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-    font-size: 18px;
+        background: #7D3C98;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 18px;
     }
 
     .social-login {
-    margin-top: 15px;
+        margin-top: 15px;
     }
 
     .btn-social {
-    border: none;
-    background: none;
-    font-size: 24px;
-    margin: 0 10px;
-    cursor: pointer;
+        border: none;
+        background: none;
+        font-size: 24px;
+        margin: 0 10px;
+        cursor: pointer;
     }
 
     .google {
-    color: #db4437;
+        color: #db4437;
     }
 
     .facebook {
-    color: #3b5998;
+        color: #3b5998;
     }
 </style>
 
@@ -160,6 +161,16 @@ else
 <EditForm Model="Usuario" OnValidSubmit="HandleSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <div>
+        <label for="apodo">* Apodo o NickName:</label>
+        <InputText id="apodo" @bind-value="Usuario.Apodo" class="form-control" required />
+        @if (mostrarErrores)
+        {
+            <div class="error-bubble">
+                <ValidationMessage For="@(() => Usuario.Apodo)" />
+            </div>
+        }
+    </div>
 
     <div>
         <label for="nombre">* Nombre Completo:</label>

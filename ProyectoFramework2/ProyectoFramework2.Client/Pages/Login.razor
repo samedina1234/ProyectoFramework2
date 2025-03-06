@@ -105,9 +105,10 @@
 <h1>Iniciar Sesión</h1>
 
 <EditForm Model="loginRequest" OnValidSubmit="HandleSubmit" FormName="loginForm">
+
     <div>
         <label for="Correo">Correo:</label>
-        <InputText id="Correo" @bind-Value="loginRequest.Correo" class="form-control" required/>
+        <InputText id="Correo" @bind-Value="loginRequest.Correo" class="form-control" required />
     </div>
     <div>
         <label for="Contraseña">Contraseña:</label>
@@ -128,10 +129,10 @@
 
 @code {
     private LoginRequest loginRequest = new LoginRequest
-    {
-        Correo = string.Empty,
-        Contraseña = string.Empty
-    };
+        {
+            Correo = string.Empty,
+            Contraseña = string.Empty
+        };
     private string? errorMessage { get; set; } = string.Empty;
 
     private async Task HandleSubmit()

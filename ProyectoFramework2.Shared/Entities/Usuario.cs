@@ -27,8 +27,9 @@ namespace ProyectoFramework2.Shared.Entities
         public string Contraseña { get; set; } = null!;
 
         [StringLength(100, MinimumLength = 8, ErrorMessage = "Su NickName o Apodo debe tener al menos 8 caracteres.")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?:.*[!@#$])?.{8,}$",
-        ErrorMessage = "Su NickName o Apodo debe contener al menos una letra mayúscula, una letra minúscula, un número y, opcionalmente, un carácter especial permitido (!@#$).")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?:.*\d)?(?:.*[!@#$])?.{8,}$",
+        ErrorMessage = "Su NickName o Apodo debe contener al menos una letra mayúscula, una letra minúscula, y puede contener opcionalmente un número y/o un carácter especial permitido (!@#$).")]
+
         public string? Apodo { get; set; }
 
         public string? Genero { get; set; }
@@ -36,6 +37,8 @@ namespace ProyectoFramework2.Shared.Entities
         public DateOnly FechaRegistro { get; set; }
 
         public bool Estado { get; set; }
+
+        public virtual ICollection<Habito> Habitos { get; set; } = new List<Habito>();
 
         public virtual ICollection<RegistroHabito> RegistroHabitos { get; set; } = new List<RegistroHabito>();
     }

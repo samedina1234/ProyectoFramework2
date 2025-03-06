@@ -13,13 +13,14 @@ namespace ProyectoFramework2.Controller
     {
         private readonly ContraseñaHash _passwordHasher;
         private readonly HabitosContext _context;
-        //private readonly ILogger<AuthController> _logger; // Agregar el logger
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(HabitosContext context, ContraseñaHash passwordHasher/*, ILogger<AuthController> logger*/)
+        public AuthController(HabitosContext context, ContraseñaHash passwordHasher, ILogger<AuthController> logger)
         {
             _passwordHasher = passwordHasher;
             _context = context;
-            //_logger = logger; // Inicializar el logger
+            _logger = logger;
+
         }
 
         [HttpPost("login")] // Endpoint para el login
